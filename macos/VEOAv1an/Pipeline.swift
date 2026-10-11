@@ -200,9 +200,12 @@ final class Pipeline: ObservableObject {
                     "-e", cfg.encoder,
                     "-v", cfg.encoderParams,
                     "-a", cfg.audioParams,
-                    // VSScript (VapourSynth) isn't bundled — use ffmpeg
-                    // chunking so no external VS dependency is needed.
-                    "--chunk-method", "ffmpeg",
+                    // VSScript (VapourSynth) isn't bundled — use an
+                    // ffmpeg-only chunk method so no external VS
+                    // dependency is needed. av1an 0.5.x doesn't know a
+                    // "ffmpeg" chunk method (newer av1an does); hybrid
+                    // is its own fallback when no VS plugin exists.
+                    "--chunk-method", "hybrid",
                     "-y"]
         if cfg.workers > 0 { args += ["-w", String(cfg.workers)] }
         if let zones { args += ["--zones", zones.path] }
