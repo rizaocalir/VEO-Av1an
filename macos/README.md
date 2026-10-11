@@ -1,3 +1,5 @@
+![VEO-Av1an Bridge](../docs/banner.png)
+
 # VEO Av1an Bridge — macOS uygulaması
 
 SwiftUI ile yazılmış native macOS uygulaması. Python köprüsünün
