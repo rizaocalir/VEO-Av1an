@@ -8,3 +8,5 @@ zones.txt
 macos/VEOAv1an.xcodeproj/
 macos/tools/veo
 macos/tools/av1an
+macos/VEOAv1an/Assets.xcassets/AppIcon.appiconset/icon_*.png
+!macos/VEOAv1an/Assets.xcassets/AppIcon.appiconset/icon_1024.png

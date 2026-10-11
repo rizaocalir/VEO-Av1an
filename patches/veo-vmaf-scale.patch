@@ -1,0 +1,25 @@
+diff --git a/internal/quality/measure.go b/internal/quality/measure.go
+index 4aec7de..230ea7b 100644
+--- a/internal/quality/measure.go
++++ b/internal/quality/measure.go
+@@ -110,12 +110,15 @@ func Measure(ctx context.Context, reference, distorted string, opts MeasureOpts)
+ 	// build FFmpeg command
+ 	// lNote: distorted is first input [0:v], reference is second input [1:v]
+ 	//
+-	// lVMAF requires both inputs to be the same resolution. We always scale
+-	// the distorted video to the reference resolution to handle cases where
+-	// the encode is at a lower resolution than the source.
++	// lVMAF requires both inputs to be the same resolution. Scale the
++	// distorted stream to the reference's *decoded* size via scale2ref
++	// rather than the probed WxH: for rotated input (Display Matrix)
++	// autorotate changes the decoded frame size, so probed dims and
++	// decoded dims diverge and libvmaf fails with "input width/height
++	// must match".
+ 	filtergraph := fmt.Sprintf(
+-		"[0:v]scale=%d:%d:flags=bicubic[dist];[dist][1:v]libvmaf=%s",
+-		refVideo.Width, refVideo.Height, vmafOpts)
++		"[0:v][1:v]scale2ref=flags=bicubic[dist][ref];[dist][ref]libvmaf=%s",
++		vmafOpts)
+ 
+ 	args := []string{
+ 		"-i", distorted,
