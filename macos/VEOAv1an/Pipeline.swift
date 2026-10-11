@@ -200,6 +200,9 @@ final class Pipeline: ObservableObject {
                     "-e", cfg.encoder,
                     "-v", cfg.encoderParams,
                     "-a", cfg.audioParams,
+                    // VSScript (VapourSynth) isn't bundled — use ffmpeg
+                    // chunking so no external VS dependency is needed.
+                    "--chunk-method", "ffmpeg",
                     "-y"]
         if cfg.workers > 0 { args += ["-w", String(cfg.workers)] }
         if let zones { args += ["--zones", zones.path] }
