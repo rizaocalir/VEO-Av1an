@@ -16,7 +16,7 @@ Sistem gereksinimleri:
 
 İpuçları:
 - En sorunsuz girdi: yuv420p, çift sayılı çözünürlük (örn. 1920x1080)
-- Çıktı olarak .mkv önerilir
+- Çıktı .mp4 veya .mkv olabilir (mp4 kayıpsız remux ile üretilir)
 - Analiz süresi video uzunluğuyla büyür; uzun videolarda sabırlı olun
 - veo ve av1an uygulamanın içinde gömülüdür, ayrıca kurulum gerekmez
 
@@ -33,6 +33,6 @@ System requirements:
 
 Tips:
 - Smoothest input: yuv420p, even width/height (e.g. 1920x1080)
-- Prefer .mkv output
+- Output can be .mp4 or .mkv (mp4 is produced via lossless remux)
 - Analysis time grows with video length
 - veo and av1an are bundled inside the app — nothing else to install

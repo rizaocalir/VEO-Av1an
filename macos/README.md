@@ -29,7 +29,8 @@ içinde gömülüdür (`Contents/Resources/tools/`).
   `xattr -dr com.apple.quarantine "VEO Av1an Bridge.app"`
 
 Önerilen girdi: yuv420p piksel formatı, çift sayılı çözünürlük. Çıktı
-olarak `.mkv` önerilir. Analiz süresi video uzunluğuyla büyür (VEO her
+olarak `.mp4` veya `.mkv` seçilebilir (`.mp4` kodlamadan sonra
+kayıpsız `ffmpeg -c copy` remux'uyla üretilir). Analiz süresi video uzunluğuyla büyür (VEO her
 segmenti birkaç kez deneme kodlaması yapar).
 
 ## Derleme gereksinimleri (geliştirici)
