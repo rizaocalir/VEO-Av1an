@@ -21,11 +21,13 @@ struct ContentView: View {
     @AppStorage("verifyVMAF") private var verifyVMAF = false
     @AppStorage("fallbackNoZones") private var fallbackNoZones = false
     @AppStorage("keepWorkdir") private var keepWorkdir = false
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     @State private var inputPath = ""
     @State private var outputPath = ""
     @State private var dropTargeted = false
     @State private var showAdvanced = false
+    @State private var showOnboarding = false
 
     private var canRun: Bool {
         !inputPath.isEmpty && !outputPath.isEmpty && !pipeline.isRunning
@@ -39,6 +41,15 @@ struct ContentView: View {
             logSection
         }
         .padding()
+        .onAppear {
+            if !hasSeenOnboarding { showOnboarding = true }
+        }
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingView {
+                hasSeenOnboarding = true
+                showOnboarding = false
+            }
+        }
     }
 
     // MARK: - Files
@@ -181,6 +192,14 @@ struct ContentView: View {
                 .disabled(!pipeline.isRunning)
 
             Spacer()
+
+            Button {
+                showOnboarding = true
+            } label: {
+                Image(systemName: "questionmark.circle")
+            }
+            .help("Kullanım notları")
+            .buttonStyle(.borderless)
             Text(pipeline.phase.rawValue).foregroundStyle(.secondary)
             if let p = pipeline.progress {
                 ProgressView(value: p).frame(width: 160)
@@ -249,5 +268,38 @@ struct ContentView: View {
         await pipeline.run(input: URL(fileURLWithPath: inputPath),
                            output: URL(fileURLWithPath: outputPath),
                            cfg: cfg)
+    }
+}
+
+// MARK: - First-run info sheet
+
+private struct OnboardingView: View {
+    let onClose: () -> Void
+
+    private let tips: [(String, String)] = [
+        ("film", "Girdi: mp4, mkv, mov, avi, webm — ffprobe'nin okuduğu her format."),
+        ("checkmark.seal", "En sorunsuz girdi: yuv420p piksel formatı ve çift sayılı en/boy (örn. 1920x1080)."),
+        ("shippingbox", "Çıktı olarak .mkv önerilir; Av1an parçaları en güvenli bu kapta birleştirir."),
+        ("timer", "Analiz süresi video uzadıkça artar — VEO her segmenti birkaç kez deneme kodlaması yapar."),
+        ("internaldrive", "Diskte kaynak boyutunun birkaç katı boş alan bırak (geçici parça dosyaları için)."),
+        ("wrench.and.screwdriver", "veo ve av1an uygulamanın içinde gömülü; ayrıca kurulum gerekmez. ffprobe sistemde kurulu olmalı (brew install ffmpeg)."),
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Kullanım Notları")
+                .font(.title2).bold()
+            ForEach(tips, id: \.1) { symbol, text in
+                Label(text, systemImage: symbol)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            HStack {
+                Spacer()
+                Button("Anladım") { onClose() }
+                    .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(20)
+        .frame(width: 420)
     }
 }
