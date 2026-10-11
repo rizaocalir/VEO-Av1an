@@ -1,0 +1,5 @@
+0 48 svt-av1 --crf 38
+48 96 svt-av1 --crf 24
+96 144 svt-av1 --crf 30
+144 192 svt-av1 --crf 21
+192 -1 svt-av1 --crf 41

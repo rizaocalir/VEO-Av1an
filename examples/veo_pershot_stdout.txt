@@ -1,0 +1,27 @@
+╔══════════════════════════════════════════╗
+║        VEO Per-Shot Analysis             ║
+╚══════════════════════════════════════════╝
+
+  Source:      input.mkv
+  Threshold:   10.00
+  Codecs:      libsvtav1
+  Target BR:   2000 kbps
+
+  Analyzed 3 shots (15 total trials) in 1m2s
+
+  Shot 1 (0.0s - 4.2s, 4.2s):
+    Hull: 5 points, 900 - 3200 kbps, VMAF 90.1 - 97.4
+  Shot 2 (4.2s - 9.8s, 5.6s):
+    Hull: 5 points, 1500 - 6000 kbps, VMAF 88.3 - 96.9
+  Shot 3 (9.8s - 12.0s, 2.2s):
+    Hull: 5 points, 600 - 2400 kbps, VMAF 91.0 - 97.8
+
+  Trellis Optimization (target: 2000 kbps avg):
+
+    Shot   Res     Codec      CRF   Bitrate     VMAF
+    ----   ---     -----      ---   -------     ----
+    1      1080p   libsvtav1  30    1800 kbps   94.2
+    2      1080p   libsvtav1  24    3100 kbps   94.8
+    3      1080p   libsvtav1  34    900 kbps    93.1
+
+    Weighted avg: 1990 kbps (target: 2000)

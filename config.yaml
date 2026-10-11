@@ -1,0 +1,38 @@
+# VEO-Av1an bridge configuration.
+# Every key here has an equivalent CLI flag (see `bridge.py --help`);
+# CLI flags override this file.
+
+# --- Paths / tools ---
+veo_binary: veo            # VEO binary on PATH (Go program, terranvigil/veo)
+av1an_binary: av1an        # Av1an binary (Rust)
+ffprobe_binary: ffprobe
+ffmpeg_binary: ffmpeg
+
+# --- Analysis ---
+veo_mode: per-segment      # per-segment | per-shot
+veo_codec: libsvtav1       # codec VEO tests during analysis
+veo_preset: medium
+target_vmaf: 93.0          # per-segment target quality
+target_bitrate: 2000       # kbps, per-shot Trellis budget
+shot_threshold: 10.0       # scdet threshold (per-shot)
+
+# --- Encoding ---
+encoder: svt-av1           # Av1an encoder: svt-av1 | x264 | x265 | aom
+encoder_params: "--preset 6"
+extra_zone_params: ""      # appended to every zone line, e.g. "--photon-noise 4"
+default_crf: 30            # used for segments VEO didn't give a CRF
+crf_pick: median           # median | midpoint | min | max (CRF ranges/lists)
+min_scene_len: 24          # frames; shorter zones get merged into neighbours
+audio_params: "-c:a copy"
+workers: 0                 # 0 = Av1an decides
+
+# --- Housekeeping ---
+tmp_dir: ""                # empty = system temp
+keep_workdir: false
+disk_space_factor: 3.0     # require ~3x input size free space
+verify_vmaf: false
+log_level: INFO            # DEBUG | INFO | WARNING | ERROR
+
+# --- Failure policy ---
+fallback_no_zones: false   # retry without --zones if Av1an rejects the file
+dry_run: false

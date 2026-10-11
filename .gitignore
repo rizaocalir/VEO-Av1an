@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+veo-av1an-*/
+zones.txt
+*.log

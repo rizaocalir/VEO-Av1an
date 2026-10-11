@@ -1,0 +1,9 @@
+Detecting shots: input.mkv (threshold=10.00, min=0.5s)
+
+Found 3 shots:
+
+  #   Start    End      Duration
+  -   -----    ---      --------
+  1   0.00s    4.17s    4.17s
+  2   4.17s    9.83s    5.67s
+  3   9.83s    12.00s   2.17s

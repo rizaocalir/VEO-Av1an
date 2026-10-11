@@ -1,0 +1,41 @@
+{
+  "source": "input.mkv",
+  "segments": [
+    {
+      "start": 0,
+      "end": 2000000000,
+      "crf": 38,
+      "bitrate": 850.0,
+      "vmaf": 93.4,
+      "complexity": 30.0,
+      "iterations": 2
+    },
+    {
+      "start": 2000000000,
+      "end": 4000000000,
+      "crf": 24,
+      "bitrate": 2100.0,
+      "vmaf": 92.8,
+      "complexity": 62.0,
+      "iterations": 3
+    },
+    {
+      "start": 4000000000,
+      "end": 6000000000,
+      "crf": 30,
+      "bitrate": 1400.0,
+      "vmaf": 93.1,
+      "complexity": 47.0,
+      "iterations": 3
+    }
+  ],
+  "avg_bitrate": 1450.0,
+  "avg_vmaf": 93.1,
+  "target_vmaf": 93.0,
+  "duration": 72000000000,
+  "complexity_profile": {
+    "avg_spatial": 0.042,
+    "avg_temporal": 12.3,
+    "overall_score": 47.0
+  }
+}
