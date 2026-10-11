@@ -1,0 +1,49 @@
+# XcodeGen project spec — `xcodegen` in macos/ dizininde çalıştırılır.
+# brew install xcodegen && cd macos && xcodegen && open VEOAv1an.xcodeproj
+
+name: VEOAv1an
+options:
+  bundleIdPrefix: com.grctek
+  deploymentTarget:
+    macOS: "13.0"
+targets:
+  VEOAv1an:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - VEOAv1an
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.grctek.VEOAv1an
+        PRODUCT_NAME: "VEO Av1an Bridge"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.video
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 0.1.0
+        SWIFT_VERSION: "5.9"
+        MACOSX_DEPLOYMENT_TARGET: "13.0"
+  VEOAv1anTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - VEOAv1anTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.9"
+    dependencies:
+      - target: VEOAv1an
+schemes:
+  VEOAv1an:
+    build:
+      targets:
+        VEOAv1an: all
+        VEOAv1anTests: [test]
+    test:
+      targets:
+        - VEOAv1anTests
+    run:
+      config: Debug
