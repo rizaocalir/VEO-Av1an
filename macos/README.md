@@ -18,7 +18,7 @@ SwiftUI ile yazılmış native macOS uygulaması. Python köprüsünün
 Dağıtılan `.app` sıfır kurulumla çalışır — `veo` ve `av1an` uygulamanın
 içinde gömülüdür (`Contents/Resources/tools/`).
 
-- **macOS 13.0+**, Apple Silicon (gömülü araçlar arm64; Intel Mac'te
+- **macOS 13.0+**, Apple Silicon M-serisi (M1…M5; gömülü araçlar arm64 — Intel Mac'te
   araçların PATH'te kurulu olması gerekir)
 - **ffprobe + ffmpeg** — girdi analizi ve parça işleme için PATH'te
   (`/opt/homebrew/bin`, `/usr/local/bin` vb. taranır): `brew install ffmpeg`

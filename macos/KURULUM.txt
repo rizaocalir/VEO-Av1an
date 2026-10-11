@@ -9,7 +9,7 @@ TR
        xattr -dr com.apple.quarantine ~/Desktop/"VEO Av1an Bridge.app"
 
 Sistem gereksinimleri:
-- macOS 13.0 ve üzeri, Apple Silicon (M1/M2/M3/M4)
+- macOS 13.0 ve üzeri, Apple Silicon (M-serisi: M1/M2/M3/M4/M5)
 - ffmpeg kurulu olmalı (girdi analizi için):
       brew install ffmpeg
 - Diskte kaynak videonun birkaç katı boş alan.
