@@ -63,9 +63,27 @@ enum Encoders {
         "libx265": "x265", "x265": "x265",
         "libaom-av1": "aom", "aom": "aom",
     ]
+    // Av1an encoder name -> canonical VEO (FFmpeg) codec name.
+    // A reverse lookup over codecToAv1an would be nondeterministic
+    // (several keys share a value and dictionary order is not stable).
+    static let av1anToVeo: [String: String] = [
+        "svt-av1": "libsvtav1",
+        "x264": "libx264",
+        "x265": "libx265",
+        "aom": "libaom-av1",
+    ]
+    // Sensible `av1an -v` (encoder params) defaults per encoder — the
+    // flag syntax differs (x264/x265 named presets, svt-av1 numeric,
+    // aom -cpu-used).
+    static let defaultParams: [String: String] = [
+        "svt-av1": "--preset 6",
+        "x264": "--preset medium",
+        "x265": "--preset medium",
+        "aom": "--cpu-used 6",
+    ]
     static let names = ["svt-av1", "x264", "x265", "aom"]
     static func veoCodec(for av1anName: String) -> String {
-        codecToAv1an.first(where: { $0.value == av1anName })?.key ?? "libsvtav1"
+        av1anToVeo[av1anName] ?? "libsvtav1"
     }
 }
 

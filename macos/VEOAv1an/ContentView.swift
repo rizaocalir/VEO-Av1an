@@ -100,6 +100,16 @@ struct ContentView: View {
                         ForEach(Encoders.names, id: \.self) { Text($0) }
                     }
                     .frame(width: 160)
+                    .onChange(of: encoder) { newEncoder in
+                        // keep a still-default params field valid for
+                        // the newly selected encoder; leave custom
+                        // strings untouched
+                        if Encoders.defaultParams.values
+                            .contains(encoderParams) || encoderParams.isEmpty {
+                            encoderParams = Encoders.defaultParams[newEncoder]
+                                ?? encoderParams
+                        }
+                    }
                     Stepper("İşçi: \(workers == 0 ? "auto" : "\(workers)")",
                             value: $workers, in: 0...32)
                 }

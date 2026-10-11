@@ -14,6 +14,7 @@ targets:
     sources:
       - VEOAv1an
       - path: tools          # gömülü veo/av1an binary'leri (Contents/Resources/tools)
+        type: folder         # klasör referansı: tools/ yapısı korunarak kopyalanır
         buildPhase: resources
     settings:
       base:

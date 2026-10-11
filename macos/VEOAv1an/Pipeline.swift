@@ -72,6 +72,9 @@ final class Pipeline: ObservableObject {
             let pipe = Pipe()
             p.executableURL = URL(fileURLWithPath: executable)
             p.arguments = args
+            // GUI app's cwd is "/" (read-only); tools like av1an write
+            // logs next to it — give them a writable directory.
+            p.currentDirectoryURL = FileManager.default.temporaryDirectory
             p.standardOutput = pipe
             p.standardError = pipe
             var buffer = ""
@@ -150,16 +153,38 @@ final class Pipeline: ObservableObject {
         return (fps, frames)
     }
 
+    // veo forwards --preset verbatim to ffmpeg's -preset. libsvtav1 only
+    // accepts a numeric preset, so x264-style names must be translated.
+    // libaom-av1 has no -preset at all — return "" to pass an empty value,
+    // which makes veo omit the ffmpeg flag.
+    private func veoPresetArg(for codec: String, cfg: RunConfig) -> String {
+        switch codec {
+        case "libsvtav1":
+            let map: [String: String] = [
+                "placebo": "3", "veryslow": "4", "slower": "5", "slow": "6",
+                "medium": "8", "fast": "10", "faster": "11", "veryfast": "11",
+                "superfast": "12", "ultrafast": "13",
+            ]
+            let p = cfg.veoPreset.lowercased()
+            return map[p] ?? (Int(p) != nil ? p : "8")
+        case "libaom-av1":
+            return ""
+        default:
+            return cfg.veoPreset   // libx264/libx265 accept named presets
+        }
+    }
+
     private func veoCommand(_ cfg: RunConfig, input: URL) -> [String] {
         let codec = Encoders.veoCodec(for: cfg.encoder)
+        let preset = veoPresetArg(for: codec, cfg: cfg)
         if cfg.veoMode == "per-shot" {
             return ["per-shot", "analyze", "-i", input.path,
                     "--threshold", String(cfg.shotThreshold),
                     "--target-bitrate", String(Int(cfg.targetBitrate)),
-                    "--codecs", codec]
+                    "--codecs", codec, "--preset", preset]
         }
         return ["per-segment", "analyze", "-i", input.path,
-                "--codec", codec, "--preset", cfg.veoPreset,
+                "--codec", codec, "--preset", preset,
                 "--target-vmaf", String(cfg.targetVMAF)]
     }
 
