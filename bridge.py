@@ -50,13 +50,13 @@ DEFAULTS = {
     "veo_mode": "per-segment",          # per-segment | per-shot
     "veo_json": None,                   # pre-saved VEO JSON (skip VEO run)
     "encoder": "svt-av1",
-    "veo_codec": "libsvtav1",           # codec VEO analyzes with
+    "veo_codec": None,                  # codec VEO analyzes with (default: follows --encoder)
     "veo_preset": "medium",
     "target_vmaf": 93.0,
     "target_bitrate": 2000,             # kbps, per-shot Trellis budget
     "shot_threshold": 10.0,
     "workers": 0,                       # 0 = Av1an decides
-    "encoder_params": "--preset 6",     # Av1an --video-params (base params)
+    "encoder_params": None,             # Av1an --video-params (default: per-encoder map)
     "extra_zone_params": "",            # appended to every zone's params
     "default_crf": 30,                  # fallback for segments without CRF
     "crf_pick": "median",               # how to pick CRF from ranges/lists
@@ -85,6 +85,40 @@ class Config:
     def set(self, name, value):
         if value is not None:
             self.vals[name] = value
+
+
+# Av1an -v defaults per encoder (mirrors the macOS app's Encoders
+# .defaultParams): flag syntax differs — x264/x265 named presets,
+# svt-av1 numeric, aom --cpu-used (av1an rejects --crf for aom).
+DEFAULT_ENCODER_PARAMS = {
+    "svt-av1": "--preset 6",
+    "x264": "--preset medium",
+    "x265": "--preset medium",
+    "aom": "--cpu-used=6 --end-usage=q",
+}
+
+# FFmpeg codec VEO analyzes with, per Av1an encoder.
+VEO_CODEC_FOR = {
+    "svt-av1": "libsvtav1",
+    "x264": "libx264",
+    "x265": "libx265",
+    "aom": "libaom-av1",
+}
+
+
+# veo forwards --preset verbatim to ffmpeg's -preset. libsvtav1 only
+# accepts a numeric preset, so x264-style names must be translated.
+# libaom-av1 has no -preset at all — return "" to omit the flag.
+def veo_preset_arg(codec: str, preset: str) -> str:
+    if codec == "libsvtav1":
+        m = {"placebo": "3", "veryslow": "4", "slower": "5", "slow": "6",
+             "medium": "8", "fast": "10", "faster": "11", "veryfast": "11",
+             "superfast": "12", "ultrafast": "13"}
+        p = preset.lower()
+        return m.get(p, p if p.isdigit() else "8")
+    if codec == "libaom-av1":
+        return ""
+    return preset
 
 
 # ---------------------------------------------------------------------------
@@ -232,18 +266,25 @@ def run(cmd: list[str], log_file: Path | None, dry_run: bool,
 
 
 def build_veo_cmd(cfg: Config, input_path: str) -> list[str]:
+    codec = cfg.veo_codec or VEO_CODEC_FOR.get(cfg.encoder, "libsvtav1")
+    preset = veo_preset_arg(codec, cfg.veo_preset)
     if cfg.veo_mode == "per-shot":
-        return [
+        cmd = [
             cfg.veo_binary, "per-shot", "analyze", "-i", input_path,
             "--threshold", str(cfg.shot_threshold),
             "--target-bitrate", str(cfg.target_bitrate),
-            "--codecs", cfg.veo_codec,
+            "--codecs", codec,
         ]
-    return [
+        if preset:
+            cmd += ["--preset", preset]
+        return cmd
+    cmd = [
         cfg.veo_binary, "per-segment", "analyze", "-i", input_path,
-        "--codec", cfg.veo_codec, "--preset", cfg.veo_preset,
-        "--target-vmaf", str(cfg.target_vmaf),
+        "--codec", codec, "--target-vmaf", str(cfg.target_vmaf),
     ]
+    if preset:
+        cmd += ["--preset", preset]
+    return cmd
 
 
 def build_av1an_cmd(cfg: Config, input_path: str, output_path: str,
@@ -251,8 +292,12 @@ def build_av1an_cmd(cfg: Config, input_path: str, output_path: str,
     cmd = [
         cfg.av1an_binary, "-i", input_path, "-o", output_path,
         "-e", cfg.encoder,
-        "-v", cfg.encoder_params,
+        "-v", cfg.encoder_params or DEFAULT_ENCODER_PARAMS.get(
+            cfg.encoder, ""),
         "-a", cfg.audio_params,
+        # `segment` chunks by timestamp — VFR-safe; `select` miscounts
+        # frames on variable-frame-rate inputs (e.g. phone recordings).
+        "--chunk-method", "segment", "--ignore-frame-mismatch",
         "-y",
     ]
     if cfg.workers:

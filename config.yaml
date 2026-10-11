@@ -10,15 +10,15 @@ ffmpeg_binary: ffmpeg
 
 # --- Analysis ---
 veo_mode: per-segment      # per-segment | per-shot
-veo_codec: libsvtav1       # codec VEO tests during analysis
-veo_preset: medium
+veo_codec: ""              # empty = follows --encoder (libsvtav1/x264/x265/aom)
+veo_preset: medium         # translated per codec (svt-av1 → numeric)
 target_vmaf: 93.0          # per-segment target quality
 target_bitrate: 2000       # kbps, per-shot Trellis budget
 shot_threshold: 10.0       # scdet threshold (per-shot)
 
 # --- Encoding ---
 encoder: svt-av1           # Av1an encoder: svt-av1 | x264 | x265 | aom
-encoder_params: "--preset 6"
+encoder_params: ""         # empty = per-encoder default (svt-av1: --preset 6)
 extra_zone_params: ""      # appended to every zone line, e.g. "--photon-noise 4"
 default_crf: 30            # used for segments VEO didn't give a CRF
 crf_pick: median           # median | midpoint | min | max (CRF ranges/lists)

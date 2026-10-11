@@ -1,55 +1,62 @@
 ![VEO-Av1an Bridge](../docs/banner.png)
 
-# VEO Av1an Bridge — macOS uygulaması
+# VEO Av1an Bridge — macOS app
 
-SwiftUI ile yazılmış native macOS uygulaması. Python köprüsünün
-(`../bridge.py`, `../veo_to_av1an.py`) mantığını Swift'e taşır ve
-`veo`/`av1an`/`ffprobe`/`ffmpeg` komutlarını doğrudan `Process` ile çağırır.
+**[Türkçe](README.tr.md)** | English
 
-## Özellikler
+A native macOS app written in SwiftUI. It ports the Python bridge's
+(`../bridge.py`, `../veo_to_av1an.py`) logic to Swift and invokes
+`veo`/`av1an`/`ffprobe`/`ffmpeg` directly via `Process`.
 
-- Sürükle-bırak girdi videosu, çıktı seçici
-- Per-segment / per-shot analiz modu, encoder seçimi (svt-av1/x264/x265/aom)
-- Hedef VMAF kaydırıcısı, işçi sayısı, gelişmiş parametreler
-- Canlı log penceresi, faz göstergesi, ilerleme çubuğu, iptal
-- Zones üretimi uygulama içinde (ZoneConverter.swift — Python portu)
-- Araç arama: PATH + Homebrew/cargo dizinleri
+## Features
 
-## Sistem gereksinimleri (kullanıcı)
+- Drag-and-drop input video, output picker
+- Per-segment / per-shot analysis mode, encoder choice
+  (svt-av1/x264/x265/aom)
+- Target VMAF slider, worker count, advanced parameters
+- Live log window, phase indicator, progress bar, cancel
+- Zones generated in-app (ZoneConverter.swift — a port of the Python
+  module)
+- Tool lookup: bundle `tools/` first, then PATH + Homebrew/cargo dirs
 
-Dağıtılan `.app` sıfır kurulumla çalışır — `veo` ve `av1an` uygulamanın
-içinde gömülüdür (`Contents/Resources/tools/`).
+## System requirements (user)
 
-- **macOS 13.0+**, Apple Silicon M-serisi (M1…M5; gömülü araçlar arm64 — Intel Mac'te
-  araçların PATH'te kurulu olması gerekir)
-- **ffprobe + ffmpeg** — girdi analizi ve parça işleme için PATH'te
-  (`/opt/homebrew/bin`, `/usr/local/bin` vb. taranır): `brew install ffmpeg`
-- **Disk:** kaynak videonun birkaç katı boş alan (Av1an geçici parçaları)
-- Uygulama imzasızdır: ilk açılışta sağ tık → **Aç**, ya da
+The distributed `.app` runs with zero installation — `veo`, `av1an`,
+the encoder binaries and `mkvmerge` are embedded
+(`Contents/Resources/tools/`).
+
+- **macOS 13.0+**, Apple Silicon M-series (M1…M5; embedded tools are
+  arm64 — on Intel Macs the tools must be on PATH instead)
+- **ffprobe + ffmpeg** — on PATH for input probing and remux
+  (`/opt/homebrew/bin`, `/usr/local/bin` etc. are searched):
+  `brew install ffmpeg`
+- **Disk:** a few times the source video's size free (Av1an temp
+  chunks)
+- The app is unsigned: on first launch right-click → **Open**, or
   `xattr -dr com.apple.quarantine "VEO Av1an Bridge.app"`
 
-Önerilen girdi: yuv420p piksel formatı, çift sayılı çözünürlük. Çıktı
-olarak `.mp4` veya `.mkv` seçilebilir (`.mp4` kodlamadan sonra
-kayıpsız `ffmpeg -c copy` remux'uyla üretilir). Analiz süresi video uzunluğuyla büyür (VEO her
-segmenti birkaç kez deneme kodlaması yapar).
+Recommended input: yuv420p pixel format, even width/height. Output can
+be `.mp4` or `.mkv` (`.mp4` is produced by a lossless
+`ffmpeg -c copy` remux after encoding). Analysis time grows with video
+length (VEO re-encodes each segment a few times as a probe).
 
-## Derleme gereksinimleri (geliştirici)
+## Build requirements (developer)
 
 - Xcode 15+, XcodeGen (`brew install xcodegen`)
-- `macos/tools/` altına `veo` ve `av1an` binary'leri koyulur
-  (terranvigil/veo ve rust-av/Av1an'dan arm64 derlemesi;
-  `../patches/` altındaki yamalar uygulanmış halleri)
+- Place `veo` and `av1an` binaries under `macos/tools/`
+  (arm64 builds from terranvigil/veo and rust-av/Av1an with the
+  `../patches/` applied)
 
-## Derleme
+## Build
 
 ```bash
-brew install xcodegen        # bir kez
+brew install xcodegen        # once
 cd macos
-xcodegen                   # VEOAv1an.xcodeproj üretir
-open VEOAv1an.xcodeproj    # Xcode'da aç, ⌘R ile çalıştır
+xcodegen                   # generates VEOAv1an.xcodeproj
+open VEOAv1an.xcodeproj    # open in Xcode, ⌘R to run
 ```
 
-Ya da komut satırından:
+Or from the command line:
 
 ```bash
 xcodebuild -project VEOAv1an.xcodeproj -scheme VEOAv1an \
@@ -57,25 +64,25 @@ xcodebuild -project VEOAv1an.xcodeproj -scheme VEOAv1an \
 xcodebuild -project VEOAv1an.xcodeproj -scheme VEOAv1an test
 ```
 
-İmzalama "Run Locally" (`CODE_SIGN_IDENTITY=-`) olarak ayarlı — geliştirici
-hesabı gerekmez.
+Signing is set to "Run Locally" (`CODE_SIGN_IDENTITY=-`) — no
+developer account needed.
 
-## Birim testleri
+## Unit tests
 
-`VEOAv1anTests/ZoneConverterTests.swift` — Python taraftaki
-`tests/test_veo_to_av1an.py` ile birebir aynı senaryolar.
+`VEOAv1anTests/ZoneConverterTests.swift` — the exact same scenarios as
+`tests/test_veo_to_av1an.py` on the Python side.
 
-## Yapı
+## Layout
 
 ```
 macos/
 ├── project.yml              # XcodeGen spec
 ├── VEOAv1an/
 │   ├── VEOAv1anApp.swift    # @main
-│   ├── ContentView.swift    # UI (dosyalar, ayarlar, kontroller, log)
-│   ├── Pipeline.swift       # Process orkestrasyonu + faz yönetimi
-│   ├── ZoneConverter.swift  # VEO -> zones dönüştürücü (Swift port)
-│   └── ToolLocator.swift    # PATH/Homebrew araç bulma
+│   ├── ContentView.swift    # UI (files, settings, controls, log)
+│   ├── Pipeline.swift       # Process orchestration + phase handling
+│   ├── ZoneConverter.swift  # VEO -> zones converter (Swift port)
+│   └── ToolLocator.swift    # bundle/PATH/Homebrew tool lookup
 └── VEOAv1anTests/
     └── ZoneConverterTests.swift
 ```
