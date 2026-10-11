@@ -17,6 +17,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.grctek.VEOAv1an
         PRODUCT_NAME: "VEO Av1an Bridge"
+        PRODUCT_MODULE_NAME: VEOAv1an
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.video
         CODE_SIGN_STYLE: Automatic
@@ -34,6 +35,7 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
         SWIFT_VERSION: "5.9"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/VEO Av1an Bridge.app/Contents/MacOS/VEO Av1an Bridge"
     dependencies:
       - target: VEOAv1an
 schemes:

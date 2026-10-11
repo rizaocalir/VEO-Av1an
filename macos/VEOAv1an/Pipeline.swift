@@ -135,7 +135,7 @@ final class Pipeline: ObservableObject {
         let rate = (stream["avg_frame_rate"] as? String) ?? "0/1"
         let parts = rate.split(separator: "/").map { Double($0) ?? 0 }
         let fps = parts.count == 2 && parts[1] != 0 ? parts[0] / parts[1] : 0
-        var frames = (stream["nb_frames"] as? NSString)?.intValue ?? 0
+        var frames = (stream["nb_frames"] as? NSString)?.integerValue ?? 0
         if frames <= 0 {
             let dur = (stream["duration"] as? NSString)?.doubleValue
                 ?? ((json["format"] as? [String: Any])?["duration"] as? NSString)?.doubleValue

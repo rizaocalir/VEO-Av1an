@@ -167,7 +167,7 @@ func parseVeoJSON(data: Data, crfPick: String = "median",
     let obj = try JSONSerialization.jsonObject(with: data)
     guard let dict = obj as? [String: Any] else { throw ConvertError.noSegments }
 
-    func crfPick(_ raw: Any?) -> Double? {
+    func pickCRF(_ raw: Any?) -> Double? {
         switch raw {
         case let n as NSNumber: return n.doubleValue
         case let list as [NSNumber]:
@@ -197,7 +197,7 @@ func parseVeoJSON(data: Data, crfPick: String = "median",
             segments.append(Segment(
                 start: asSeconds((s["start"] as? NSNumber)?.doubleValue ?? 0, maxEnd),
                 end: asSeconds((s["end"] as? NSNumber)?.doubleValue ?? 0, maxEnd),
-                crf: crfPick(s["crf"] ?? s["crf_range"] ?? s["crf_values"])
+                crf: pickCRF(s["crf"] ?? s["crf_range"] ?? s["crf_values"])
             ))
         }
         return segments
@@ -250,7 +250,7 @@ private func enforceMinLength(_ zones: inout [Zone], minFrames: Int,
             var best: (dist: Double, idx: Int)?
             if i > 0 { best = (abs(crfOf(zones[i-1]) - crfOf(zones[i])), i - 1) }
             if i < zones.count - 1 {
-                let cand = (abs(crfOf(zones[i+1]) - crfOf(zones[i])), i + 1)
+                let cand = (dist: abs(crfOf(zones[i+1]) - crfOf(zones[i])), idx: i + 1)
                 if best == nil || cand.dist < best!.dist { best = cand }
             }
             guard let target = best else { break }
