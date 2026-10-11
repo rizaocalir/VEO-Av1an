@@ -208,7 +208,8 @@ struct ContentView: View {
 
             Spacer()
 
-            Text(pipeline.phase.rawValue).foregroundStyle(.secondary)
+            Text(LocalizedStringKey(pipeline.phase.rawValue))
+                .foregroundStyle(.secondary)
             if let p = pipeline.progress {
                 ProgressView(value: p).frame(width: 160)
             } else if pipeline.isRunning {

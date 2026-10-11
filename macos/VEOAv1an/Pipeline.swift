@@ -119,7 +119,7 @@ final class Pipeline: ObservableObject {
     private func probe(_ input: URL) async throws -> (fps: Double, frames: Int) {
         guard let ffprobe = ToolLocator.find("ffprobe") else {
             throw NSError(domain: "bridge", code: 6,
-                          userInfo: [NSLocalizedDescriptionKey: "ffprobe bulunamadı"])
+                          userInfo: [NSLocalizedDescriptionKey: String(localized: "ffprobe bulunamadı")])
         }
         let p = Process()
         p.executableURL = URL(fileURLWithPath: ffprobe)
@@ -140,7 +140,7 @@ final class Pipeline: ObservableObject {
               let stream = (json["streams"] as? [[String: Any]])?.first
         else {
             throw NSError(domain: "bridge", code: 7,
-                          userInfo: [NSLocalizedDescriptionKey: "ffprobe başarısız"])
+                          userInfo: [NSLocalizedDescriptionKey: String(localized: "ffprobe başarısız")])
         }
         let rate = (stream["avg_frame_rate"] as? String) ?? "0/1"
         let parts = rate.split(separator: "/").map { Double($0) ?? 0 }
@@ -155,7 +155,7 @@ final class Pipeline: ObservableObject {
         guard fps > 0, frames > 0 else {
             throw NSError(domain: "bridge", code: 7,
                           userInfo: [NSLocalizedDescriptionKey:
-                                        "fps/kare sayısı belirlenemedi"])
+                                        String(localized: "fps/kare sayısı belirlenemedi")])
         }
         return (fps, frames)
     }
@@ -229,8 +229,8 @@ final class Pipeline: ObservableObject {
            let vmaf = pooled["vmaf"] as? [String: Any],
            let mean = (vmaf["mean"] as? NSNumber)?.doubleValue {
             let delta = mean - cfg.targetVMAF
-            appendLog(String(format:
-                "VMAF sonuç: %.2f (hedef %.1f, fark %+.2f)", mean, cfg.targetVMAF, delta))
+            appendLog(String(format: String(localized:
+                "VMAF sonuç: %.2f (hedef %.1f, fark %+.2f)"), mean, cfg.targetVMAF, delta))
         }
     }
 
@@ -241,8 +241,8 @@ final class Pipeline: ObservableObject {
         progress = nil
         logLines = []
         cancelled = false
-        appendLog("girdi: \(input.path)")
-        appendLog("çıktı: \(output.path)")
+        appendLog(String(localized: "girdi: \(input.path)"))
+        appendLog(String(localized: "çıktı: \(output.path)"))
 
         // av1an always concats to Matroska; non-mkv outputs are
         // remuxed losslessly with ffmpeg afterwards.
@@ -251,8 +251,8 @@ final class Pipeline: ObservableObject {
             ["veo", "av1an", "ffprobe"]
                 + ((cfg.verifyVMAF || needsRemux) ? ["ffmpeg"] : []))
         if !missing.isEmpty {
-            appendLog("eksik araçlar: \(missing.joined(separator: ", "))")
-            appendLog("brew/cargo ile kurun veya PATH'e ekleyin.")
+            appendLog(String(localized: "eksik araçlar: \(missing.joined(separator: ", "))"))
+            appendLog(String(localized: "brew/cargo ile kurun veya PATH'e ekleyin."))
             phase = .failed
             return
         }
@@ -265,14 +265,14 @@ final class Pipeline: ObservableObject {
             if !cfg.keepWorkdir {
                 try? FileManager.default.removeItem(at: workdir)
             } else {
-                appendLog("workdir saklandı: \(workdir.path)")
+                appendLog(String(localized: "workdir saklandı: \(workdir.path)"))
             }
         }
 
         do {
             // 1) probe
             let (fps, frames) = try await probe(input)
-            appendLog(String(format: "video: %.4f fps, %d kare", fps, frames))
+            appendLog(String(format: String(localized: "video: %.4f fps, %d kare"), fps, frames))
 
             // 2) VEO
             phase = .analyzing
@@ -281,7 +281,7 @@ final class Pipeline: ObservableObject {
                                           tag: "veo")
             if cancelled { phase = .cancelled; return }
             if veoResult.code != 0 {
-                appendLog("VEO hata verdi (çıkış \(veoResult.code))")
+                appendLog(String(localized: "VEO hata verdi (çıkış \(veoResult.code))"))
                 phase = .failed
                 return
             }
@@ -299,20 +299,20 @@ final class Pipeline: ObservableObject {
                 encoder: cfg.encoder, defaultCRF: cfg.defaultCRF,
                 minSceneFrames: cfg.minSceneLen,
                 extraZoneParams: cfg.extraZoneParams, report: &report)
-            appendLog(String(format:
-                "dönüşüm: %d segment -> %d zone (kısa birleşti: %d, çakışma kırpıldı: %d, crf kenetlendi: %d)",
+            appendLog(String(format: String(localized:
+                "dönüşüm: %d segment -> %d zone (kısa birleşti: %d, çakışma kırpıldı: %d, crf kenetlendi: %d)"),
                 report.inputSegments, report.outputZones, report.droppedShort,
                 report.clippedOverlaps, report.clampedCRF))
-            for w in report.warnings { appendLog("uyarı: \(w)") }
+            for w in report.warnings { appendLog(String(localized: "uyarı: \(w)")) }
             guard !zones.isEmpty else {
-                appendLog("zone üretilemedi")
+                appendLog(String(localized: "zone üretilemedi"))
                 phase = .failed
                 return
             }
             let zonesURL = workdir.appendingPathComponent("zones.txt")
             let zonesText = renderZones(zones)
             try zonesText.write(to: zonesURL, atomically: true, encoding: .utf8)
-            appendLog("zones.txt:\n\(zonesText)")
+            appendLog(String(localized: "zones.txt:\n\(zonesText)"))
 
             // 4) Av1an (always to mkv; remux below if user asked mp4)
             phase = .encoding
@@ -324,7 +324,7 @@ final class Pipeline: ObservableObject {
                                        tag: "av1an")
             if cancelled { phase = .cancelled; return }
             if result.code != 0 && cfg.fallbackNoZones {
-                appendLog("zones reddedildi; zones'suz tekrar deneniyor")
+                appendLog(String(localized: "zones reddedildi; zones'suz tekrar deneniyor"))
                 result = try await run(ToolLocator.find("av1an")!,
                                        av1anCommand(cfg, input: input,
                                                     output: encodeTarget, zones: nil),
@@ -333,7 +333,7 @@ final class Pipeline: ObservableObject {
             if cancelled { phase = .cancelled; return }
             guard result.code == 0,
                   FileManager.default.fileExists(atPath: encodeTarget.path) else {
-                appendLog("Av1an başarısız (çıkış \(result.code))")
+                appendLog(String(localized: "Av1an başarısız (çıkış \(result.code))"))
                 phase = .failed
                 return
             }
@@ -348,7 +348,7 @@ final class Pipeline: ObservableObject {
                 if cancelled { phase = .cancelled; return }
                 guard remux.code == 0,
                       FileManager.default.fileExists(atPath: output.path) else {
-                    appendLog("remux başarısız (çıkış \(remux.code)) — mkv işyerinde kaldı")
+                    appendLog(String(localized: "remux başarısız (çıkış \(remux.code)) — mkv işyerinde kaldı"))
                     phase = .failed
                     return
                 }
@@ -361,9 +361,9 @@ final class Pipeline: ObservableObject {
             }
             phase = .done
             progress = 1
-            appendLog("bitti: \(output.path)")
+            appendLog(String(localized: "bitti: \(output.path)"))
         } catch {
-            appendLog("hata: \(error.localizedDescription)")
+            appendLog(String(localized: "hata: \(error.localizedDescription)"))
             phase = .failed
         }
     }

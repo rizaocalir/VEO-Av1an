@@ -1,0 +1,331 @@
+{
+  "sourceLanguage" : "tr",
+  "strings" : {
+    "Dosyalar" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Files" } }
+      }
+    },
+    "Girdi videosu (sürükle-bırak)" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Input video (drag & drop)" } }
+      }
+    },
+    "Çıktı dosyası" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Output file" } }
+      }
+    },
+    "Seç…" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose…" } }
+      }
+    },
+    "Ayarlar" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings" } }
+      }
+    },
+    "Analiz" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Analysis" } }
+      }
+    },
+    "Per-segment" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Per-segment" } }
+      }
+    },
+    "Per-shot" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Per-shot" } }
+      }
+    },
+    "İşçi: %@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Workers: %@" } }
+      }
+    },
+    "Encoder" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Encoder" } }
+      }
+    },
+    "Hedef VMAF" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Target VMAF" } }
+      }
+    },
+    "Bit hızı" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bitrate" } }
+      }
+    },
+    "kbps" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "kbps" } }
+      }
+    },
+    "VMAF doğrula" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Verify VMAF" } }
+      }
+    },
+    "Gelişmiş" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Advanced" } }
+      }
+    },
+    "Encoder parametreleri" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Encoder parameters" } }
+      }
+    },
+    "Zone ek parametre" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Extra zone parameters" } }
+      }
+    },
+    "Varsayılan CRF: %lld" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Default CRF: %lld" } }
+      }
+    },
+    "Min sahne: %lld kare" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Min scene: %lld frames" } }
+      }
+    },
+    "Zones reddedilirse zones'suz dene" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Retry without zones if rejected" } }
+      }
+    },
+    "Çalışma klasörünü sakla" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Keep work directory" } }
+      }
+    },
+    "Kullanım notları" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Usage Notes" } }
+      }
+    },
+    "Çalışıyor…" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Running…" } }
+      }
+    },
+    "Başlat" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Start" } }
+      }
+    },
+    "İptal" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } }
+      }
+    },
+    "Günlük" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Log" } }
+      }
+    },
+    "Anladım" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Got it" } }
+      }
+    },
+    "Girdi: mp4, mkv, mov, avi, webm — ffprobe'nin okuduğu her format." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Input: mp4, mkv, mov, avi, webm — any format ffprobe can read." } }
+      }
+    },
+    "En sorunsuz girdi: yuv420p piksel formatı ve çift sayılı en/boy (örn. 1920x1080)." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Smoothest input: yuv420p pixel format and even width/height (e.g. 1920x1080)." } }
+      }
+    },
+    "Çıktı .mp4 veya .mkv olabilir — .mp4 her oynatıcıda açılır (kayıpsız remux ile üretilir)." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Output can be .mp4 or .mkv — .mp4 plays everywhere (produced via lossless remux)." } }
+      }
+    },
+    "Analiz süresi video uzadıkça artar — VEO her segmenti birkaç kez deneme kodlaması yapar." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Analysis takes longer for longer videos — VEO trial-encodes each segment several times." } }
+      }
+    },
+    "Diskte kaynak boyutunun birkaç katı boş alan bırak (geçici parça dosyaları için)." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Keep several times the source size free on disk (for temporary chunk files)." } }
+      }
+    },
+    "veo ve av1an uygulamanın içinde gömülü; ayrıca kurulum gerekmez. ffprobe sistemde kurulu olmalı (brew install ffmpeg)." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "veo and av1an are bundled inside the app; no install needed. ffprobe must be installed on the system (brew install ffmpeg)." } }
+      }
+    },
+    "Hazır" : {
+      "comment" : "phase: idle",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Ready" } }
+      }
+    },
+    "Video inceleniyor" : {
+      "comment" : "phase: probing",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Inspecting video" } }
+      }
+    },
+    "VEO analizi çalışıyor" : {
+      "comment" : "phase: analyzing",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "VEO analysis running" } }
+      }
+    },
+    "Zones üretiliyor" : {
+      "comment" : "phase: converting",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Generating zones" } }
+      }
+    },
+    "Av1an encode ediyor" : {
+      "comment" : "phase: encoding",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Av1an encoding" } }
+      }
+    },
+    "MP4'e çevriliyor" : {
+      "comment" : "phase: remuxing",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Converting to MP4" } }
+      }
+    },
+    "VMAF ölçülüyor" : {
+      "comment" : "phase: verifying",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Measuring VMAF" } }
+      }
+    },
+    "Tamamlandı" : {
+      "comment" : "phase: done",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Done" } }
+      }
+    },
+    "Hata" : {
+      "comment" : "phase: failed",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Error" } }
+      }
+    },
+    "İptal edildi" : {
+      "comment" : "phase: cancelled",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancelled" } }
+      }
+    },
+    "ffprobe bulunamadı" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "ffprobe not found" } }
+      }
+    },
+    "ffprobe başarısız" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "ffprobe failed" } }
+      }
+    },
+    "fps/kare sayısı belirlenemedi" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "could not determine fps / frame count" } }
+      }
+    },
+    "girdi: %@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "input: %@" } }
+      }
+    },
+    "çıktı: %@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "output: %@" } }
+      }
+    },
+    "eksik araçlar: %@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "missing tools: %@" } }
+      }
+    },
+    "brew/cargo ile kurun veya PATH'e ekleyin." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Install with brew/cargo or add to PATH." } }
+      }
+    },
+    "workdir saklandı: %@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "workdir kept: %@" } }
+      }
+    },
+    "video: %.4f fps, %d kare" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "video: %.4f fps, %d frames" } }
+      }
+    },
+    "VEO hata verdi (çıkış %d)" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "VEO failed (exit %d)" } }
+      }
+    },
+    "dönüşüm: %d segment -> %d zone (kısa birleşti: %d, çakışma kırpıldı: %d, crf kenetlendi: %d)" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "conversion: %d segments -> %d zones (merged short: %d, clipped overlaps: %d, clamped CRF: %d)" } }
+      }
+    },
+    "uyarı: %@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "warning: %@" } }
+      }
+    },
+    "zone üretilemedi" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "no zones produced" } }
+      }
+    },
+    "zones.txt:\n%@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "zones.txt:\n%@" } }
+      }
+    },
+    "zones reddedildi; zones'suz tekrar deneniyor" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "zones rejected; retrying without zones" } }
+      }
+    },
+    "Av1an başarısız (çıkış %d)" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Av1an failed (exit %d)" } }
+      }
+    },
+    "remux başarısız (çıkış %d) — mkv işyerinde kaldı" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "remux failed (exit %d) — mkv kept in workdir" } }
+      }
+    },
+    "VMAF sonuç: %.2f (hedef %.1f, fark %+.2f)" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "VMAF result: %.2f (target %.1f, delta %+.2f)" } }
+      }
+    },
+    "bitti: %@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "done: %@" } }
+      }
+    },
+    "hata: %@" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "error: %@" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}
