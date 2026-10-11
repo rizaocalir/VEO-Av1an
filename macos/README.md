@@ -13,11 +13,29 @@ SwiftUI ile yazılmış native macOS uygulaması. Python köprüsünün
 - Zones üretimi uygulama içinde (ZoneConverter.swift — Python portu)
 - Araç arama: PATH + Homebrew/cargo dizinleri
 
-## Gereksinimler
+## Sistem gereksinimleri (kullanıcı)
 
-- macOS 13+, Xcode 15+
-- `veo`, `av1an`, `ffprobe` (ve `--verify-vmaf` için `ffmpeg`) PATH'te
-  (`/opt/homebrew/bin`, `/usr/local/bin`, `~/.cargo/bin` da taranır)
+Dağıtılan `.app` sıfır kurulumla çalışır — `veo` ve `av1an` uygulamanın
+içinde gömülüdür (`Contents/Resources/tools/`).
+
+- **macOS 13.0+**, Apple Silicon (gömülü araçlar arm64; Intel Mac'te
+  araçların PATH'te kurulu olması gerekir)
+- **ffprobe + ffmpeg** — girdi analizi ve parça işleme için PATH'te
+  (`/opt/homebrew/bin`, `/usr/local/bin` vb. taranır): `brew install ffmpeg`
+- **Disk:** kaynak videonun birkaç katı boş alan (Av1an geçici parçaları)
+- Uygulama imzasızdır: ilk açılışta sağ tık → **Aç**, ya da
+  `xattr -dr com.apple.quarantine "VEO Av1an Bridge.app"`
+
+Önerilen girdi: yuv420p piksel formatı, çift sayılı çözünürlük. Çıktı
+olarak `.mkv` önerilir. Analiz süresi video uzunluğuyla büyür (VEO her
+segmenti birkaç kez deneme kodlaması yapar).
+
+## Derleme gereksinimleri (geliştirici)
+
+- Xcode 15+, XcodeGen (`brew install xcodegen`)
+- `macos/tools/` altına `veo` ve `av1an` binary'leri koyulur
+  (terranvigil/veo ve rust-av/Av1an'dan arm64 derlemesi;
+  `../patches/` altındaki yamalar uygulanmış halleri)
 
 ## Derleme
 

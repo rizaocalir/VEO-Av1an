@@ -42,13 +42,14 @@ struct ContentView: View {
         }
         .padding()
         .onAppear {
-            if !hasSeenOnboarding { showOnboarding = true }
+            guard !hasSeenOnboarding else { return }
+            hasSeenOnboarding = true
+            // Defer to next runloop: setting isPresented during the
+            // first onAppear can swallow the sheet on some systems.
+            DispatchQueue.main.async { showOnboarding = true }
         }
         .sheet(isPresented: $showOnboarding) {
-            OnboardingView {
-                hasSeenOnboarding = true
-                showOnboarding = false
-            }
+            OnboardingView { showOnboarding = false }
         }
     }
 

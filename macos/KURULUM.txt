@@ -1,0 +1,38 @@
+VEO Av1an Bridge — Kurulum / Install
+====================================
+
+TR
+--
+1. Zip'i aç, "VEO Av1an Bridge.app"i Applications'a ya da Masaüstü'ne sürükle.
+2. İlk açılışta çift tıklama yerine SAĞ TIK → Aç (imzasız uygulama uyarısı).
+   İzin vermezse Terminal'de:
+       xattr -dr com.apple.quarantine ~/Desktop/"VEO Av1an Bridge.app"
+
+Sistem gereksinimleri:
+- macOS 13.0 ve üzeri, Apple Silicon (M1/M2/M3/M4)
+- ffmpeg kurulu olmalı (girdi analizi için):
+      brew install ffmpeg
+- Diskte kaynak videonun birkaç katı boş alan.
+
+İpuçları:
+- En sorunsuz girdi: yuv420p, çift sayılı çözünürlük (örn. 1920x1080)
+- Çıktı olarak .mkv önerilir
+- Analiz süresi video uzunluğuyla büyür; uzun videolarda sabırlı olun
+- veo ve av1an uygulamanın içinde gömülüdür, ayrıca kurulum gerekmez
+
+EN
+--
+1. Unzip, drag "VEO Av1an Bridge.app" to Applications or Desktop.
+2. First launch: right-click → Open (unsigned-app warning), or run:
+       xattr -dr com.apple.quarantine ~/Desktop/"VEO Av1an Bridge.app"
+
+System requirements:
+- macOS 13.0+, Apple Silicon
+- ffmpeg installed (for input probing):  brew install ffmpeg
+- Free disk space a few times the source video size.
+
+Tips:
+- Smoothest input: yuv420p, even width/height (e.g. 1920x1080)
+- Prefer .mkv output
+- Analysis time grows with video length
+- veo and av1an are bundled inside the app — nothing else to install
