@@ -150,6 +150,7 @@ struct ContentView: View {
                 }
             }
             .padding(4)
+            HStack(alignment: .top) {
             DisclosureGroup("Gelişmiş", isExpanded: $showAdvanced) {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 16) {
@@ -177,6 +178,17 @@ struct ContentView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 6)
             }
+            Spacer()
+            // Help lives away from the status text so it doesn't read
+            // as "explain this error".
+            Button {
+                showOnboarding = true
+            } label: {
+                Image(systemName: "info.circle")
+            }
+            .help("Kullanım notları")
+            .buttonStyle(.borderless)
+            }
             .padding(.horizontal, 4)
         }
     }
@@ -196,13 +208,6 @@ struct ContentView: View {
 
             Spacer()
 
-            Button {
-                showOnboarding = true
-            } label: {
-                Image(systemName: "questionmark.circle")
-            }
-            .help("Kullanım notları")
-            .buttonStyle(.borderless)
             Text(pipeline.phase.rawValue).foregroundStyle(.secondary)
             if let p = pipeline.progress {
                 ProgressView(value: p).frame(width: 160)
