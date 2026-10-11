@@ -21,7 +21,9 @@ struct ContentView: View {
     @AppStorage("verifyVMAF") private var verifyVMAF = false
     @AppStorage("fallbackNoZones") private var fallbackNoZones = false
     @AppStorage("keepWorkdir") private var keepWorkdir = false
-    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    // v2 key: the v1 flag could be set without the sheet ever
+    // appearing (swallowed on first launch), hiding it forever.
+    @AppStorage("hasSeenOnboardingV2") private var hasSeenOnboarding = false
 
     @State private var inputPath = ""
     @State private var outputPath = ""
