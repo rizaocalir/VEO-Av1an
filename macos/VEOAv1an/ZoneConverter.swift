@@ -79,7 +79,7 @@ enum Encoders {
         "svt-av1": "--preset 6",
         "x264": "--preset medium",
         "x265": "--preset medium",
-        "aom": "--cpu-used 6",
+        "aom": "--cpu-used=6 --end-usage=q",
     ]
     static let names = ["svt-av1", "x264", "x265", "aom"]
     static func veoCodec(for av1anName: String) -> String {
