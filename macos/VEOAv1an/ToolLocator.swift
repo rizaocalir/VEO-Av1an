@@ -5,6 +5,12 @@
 import Foundation
 
 enum ToolLocator {
+    /// Binaries bundled inside the .app (Contents/Resources/tools/) —
+    /// checked first so the app works without any system installs.
+    static var bundledToolsDir: URL? {
+        Bundle.main.resourceURL?.appendingPathComponent("tools")
+    }
+
     static let searchDirs = [
         "/opt/homebrew/bin", "/usr/local/bin",
         "/usr/bin", "/bin",
@@ -13,8 +19,13 @@ enum ToolLocator {
         NSHomeDirectory() + "/.local/bin",
     ]
 
-    /// Resolve a tool name to an absolute path: PATH first, then common dirs.
+    /// Resolve a tool name to an absolute path: bundled copy first, then
+    /// PATH, then common install dirs.
     static func find(_ name: String) -> String? {
+        if let bundled = bundledToolsDir?.appendingPathComponent(name).path,
+           FileManager.default.isExecutableFile(atPath: bundled) {
+            return bundled
+        }
         let envPath = ProcessInfo.processInfo.environment["PATH"] ?? ""
         for dir in (envPath.split(separator: ":").map(String.init) + searchDirs) {
             let candidate = dir + "/" + name

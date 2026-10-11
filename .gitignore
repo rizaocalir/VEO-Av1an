@@ -6,3 +6,5 @@ veo-av1an-*/
 zones.txt
 *.log
 macos/VEOAv1an.xcodeproj/
+macos/tools/veo
+macos/tools/av1an

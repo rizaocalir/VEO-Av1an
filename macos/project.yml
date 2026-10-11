@@ -13,6 +13,8 @@ targets:
     deploymentTarget: "13.0"
     sources:
       - VEOAv1an
+      - path: tools          # gömülü veo/av1an binary'leri (Contents/Resources/tools)
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.grctek.VEOAv1an
