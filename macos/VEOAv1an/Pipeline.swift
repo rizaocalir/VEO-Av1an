@@ -200,10 +200,14 @@ final class Pipeline: ObservableObject {
                     "-e", cfg.encoder,
                     "-v", cfg.encoderParams,
                     "-a", cfg.audioParams,
-                    // VSScript (VapourSynth) isn't bundled — `select`
-                    // chunks via plain ffmpeg (VS-free; `hybrid` still
-                    // calls into VSScript on av1an 0.5.x).
-                    "--chunk-method", "select",
+                    // VSScript (VapourSynth) isn't bundled — `segment`
+                    // chunks by timestamp via plain ffmpeg (VS-free).
+                    // `select` miscounts frames on VFR inputs (e.g.
+                    // iPhone recordings) and kills the run; `segment`
+                    // is off by at most a boundary frame, which
+                    // --ignore-frame-mismatch tolerates.
+                    "--chunk-method", "segment",
+                    "--ignore-frame-mismatch",
                     "-y"]
         if cfg.workers > 0 { args += ["-w", String(cfg.workers)] }
         if let zones { args += ["--zones", zones.path] }
