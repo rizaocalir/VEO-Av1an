@@ -44,9 +44,11 @@ struct ContentView: View {
         .onAppear {
             guard !hasSeenOnboarding else { return }
             hasSeenOnboarding = true
-            // Defer to next runloop: setting isPresented during the
-            // first onAppear can swallow the sheet on some systems.
-            DispatchQueue.main.async { showOnboarding = true }
+            // Present only after the window is up — during the first
+            // onAppear a sheet can be swallowed silently.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                showOnboarding = true
+            }
         }
         .sheet(isPresented: $showOnboarding) {
             OnboardingView { showOnboarding = false }
@@ -147,9 +149,8 @@ struct ContentView: View {
             }
             .padding(4)
             DisclosureGroup("Gelişmiş", isExpanded: $showAdvanced) {
-                Grid(alignment: .leading, horizontalSpacing: 16,
-                     verticalSpacing: 8) {
-                    GridRow {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 16) {
                         HStack {
                             Text("Encoder parametreleri").fixedSize()
                             TextField("--preset 6", text: $encoderParams)
@@ -161,7 +162,7 @@ struct ContentView: View {
                                 .frame(width: 160)
                         }
                     }
-                    GridRow {
+                    HStack(spacing: 16) {
                         Stepper("Varsayılan CRF: \(Int(defaultCRF))",
                                 value: $defaultCRF, in: 0...63)
                         Stepper("Min sahne: \(minSceneLen) kare",
@@ -169,10 +170,9 @@ struct ContentView: View {
                         Toggle("Zones reddedilirse zones'suz dene",
                                isOn: $fallbackNoZones)
                     }
-                    GridRow {
-                        Toggle("Çalışma klasörünü sakla", isOn: $keepWorkdir)
-                    }
+                    Toggle("Çalışma klasörünü sakla", isOn: $keepWorkdir)
                 }
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 6)
             }
             .padding(.horizontal, 4)
