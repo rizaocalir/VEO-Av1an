@@ -217,6 +217,7 @@ def probe_video(path: str, ffprobe: str) -> tuple[float, int]:
     ]
     try:
         out = subprocess.run(cmd, capture_output=True, text=True,
+                             encoding="utf-8", errors="replace",
                              check=True).stdout
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         log.error("ffprobe failed on %s: %s", path, e)
@@ -255,10 +256,11 @@ def run(cmd: list[str], log_file: Path | None, dry_run: bool,
     log.info("%s: %s", desc, " ".join(cmd))
     if dry_run:
         return subprocess.CompletedProcess(cmd, 0, "", "")
-    fh = open(log_file, "w") if log_file else subprocess.DEVNULL
+    fh = open(log_file, "w", encoding="utf-8") if log_file else subprocess.DEVNULL
     try:
         proc = subprocess.run(cmd, stdout=subprocess.PIPE,
-                              stderr=fh, text=True)
+                              stderr=fh, text=True,
+                              encoding="utf-8", errors="replace")
     finally:
         if hasattr(fh, "close"):
             fh.close()
@@ -381,7 +383,8 @@ def main() -> int:
             veo_cmd = build_veo_cmd(cfg, args.input)
             proc = run(veo_cmd, workdir / "veo_stderr.log", cfg.dry_run,
                        "VEO analysis")
-            (workdir / "veo_stdout.txt").write_text(proc.stdout or "")
+            (workdir / "veo_stdout.txt").write_text(proc.stdout or "",
+                                                  encoding="utf-8")
             if proc.returncode != 0:
                 log.error("VEO failed (exit %d); stderr: %s",
                           proc.returncode, workdir / "veo_stderr.log")
@@ -425,7 +428,7 @@ def main() -> int:
             return EXIT_NO_SEGMENTS
 
         zones_path = workdir / "zones.txt"
-        zones_path.write_text(zones_text)
+        zones_path.write_text(zones_text, encoding="utf-8")
         log.info("zones file: %s\n%s", zones_path, zones_text.rstrip())
 
         # --- Step 5: Av1an ---

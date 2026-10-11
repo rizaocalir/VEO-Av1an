@@ -1,0 +1,74 @@
+diff --git a/internal/persegment/adapter.go b/internal/persegment/adapter.go
+index 60480ed..bba8ef8 100644
+--- a/internal/persegment/adapter.go
++++ b/internal/persegment/adapter.go
+@@ -19,6 +19,7 @@ import (
+ 	"time"
+ 
+ 	"github.com/terranvigil/veo/internal/complexity"
++	"github.com/terranvigil/veo/internal/encoding"
+ 	"github.com/terranvigil/veo/internal/ffmpeg"
+ 	"github.com/terranvigil/veo/internal/quality"
+ )
+@@ -144,7 +145,7 @@ func Adapt(ctx context.Context, source string, cfg Config) (*Result, error) {
+ 				Output:     segEncoded,
+ 				Codec:      cfg.Codec,
+ 				CRF:        seg.CRF,
+-				Preset:     cfg.Preset,
++				Preset:     encoding.PresetForCodec(cfg.Codec, cfg.Preset),
+ 				Resolution: cfg.Resolution,
+ 			}
+ 
+diff --git a/internal/quality/measure.go b/internal/quality/measure.go
+index 4aec7de..2c1dea8 100644
+--- a/internal/quality/measure.go
++++ b/internal/quality/measure.go
+@@ -8,6 +8,8 @@ import (
+ 	"log/slog"
+ 	"os"
+ 	"os/exec"
++	"runtime"
++	"strings"
+ 
+ 	"github.com/terranvigil/veo/internal/ffmpeg"
+ )
+@@ -65,7 +67,17 @@ func Measure(ctx context.Context, reference, distorted string, opts MeasureOpts)
+ 
+ 	// lBuild libvmaf filter string
+ 	// libvmaf 3.0 uses feature= for additional metrics (not psnr=1/ssim=1)
+-	vmafOpts := fmt.Sprintf("log_fmt=json:log_path=%s", logPath)
++	logPathArg := logPath
++	if runtime.GOOS == "windows" {
++		// The filtergraph parser treats ':' as an option separator and '\\'
++		// as an escape char, so a Windows path ("C:\\dir\\f.json") breaks it.
++		// Use forward slashes, escape the drive colon, wrap in single quotes:
++		// "C:\\dir\\f.json" -> "'C\:/dir/f.json'"
++		p := strings.ReplaceAll(logPath, `\`, "/")
++		p = strings.Replace(p, ":/", `\:/`, 1)
++		logPathArg = "'" + p + "'"
++	}
++	vmafOpts := fmt.Sprintf("log_fmt=json:log_path=%s", logPathArg)
+ 
+ 	for _, m := range opts.Metrics {
+ 		switch m {
+@@ -110,12 +122,15 @@ func Measure(ctx context.Context, reference, distorted string, opts MeasureOpts)
+ 	// build FFmpeg command
+ 	// lNote: distorted is first input [0:v], reference is second input [1:v]
+ 	//
+-	// lVMAF requires both inputs to be the same resolution. We always scale
+-	// the distorted video to the reference resolution to handle cases where
+-	// the encode is at a lower resolution than the source.
++	// lVMAF requires both inputs to be the same resolution. Scale the
++	// distorted stream to the reference's *decoded* size via scale2ref
++	// rather than the probed WxH: for rotated input (Display Matrix)
++	// autorotate changes the decoded frame size, so probed dims and
++	// decoded dims diverge and libvmaf fails with "input width/height
++	// must match".
+ 	filtergraph := fmt.Sprintf(
+-		"[0:v]scale=%d:%d:flags=bicubic[dist];[dist][1:v]libvmaf=%s",
+-		refVideo.Width, refVideo.Height, vmafOpts)
++		"[0:v][1:v]scale2ref=flags=bicubic[dist][ref];[dist][ref]libvmaf=%s",
++		vmafOpts)
+ 
+ 	args := []string{
+ 		"-i", distorted,
