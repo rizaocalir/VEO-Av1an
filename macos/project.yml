@@ -19,6 +19,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.grctek.VEOAv1an
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_NAME: "VEO Av1an Bridge"
         PRODUCT_MODULE_NAME: VEOAv1an
         GENERATE_INFOPLIST_FILE: YES

@@ -75,6 +75,9 @@ final class Pipeline: ObservableObject {
             // GUI app's cwd is "/" (read-only); tools like av1an write
             // logs next to it — give them a writable directory.
             p.currentDirectoryURL = FileManager.default.temporaryDirectory
+            var env = ProcessInfo.processInfo.environment
+            env["PATH"] = ToolLocator.childPath()
+            p.environment = env
             p.standardOutput = pipe
             p.standardError = pipe
             var buffer = ""
@@ -119,6 +122,9 @@ final class Pipeline: ObservableObject {
         }
         let p = Process()
         p.executableURL = URL(fileURLWithPath: ffprobe)
+        var env = ProcessInfo.processInfo.environment
+        env["PATH"] = ToolLocator.childPath()
+        p.environment = env
         p.arguments = ["-v", "error", "-select_streams", "v:0",
                        "-show_entries", "stream=avg_frame_rate,nb_frames,duration",
                        "-show_entries", "format=duration",

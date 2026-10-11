@@ -39,4 +39,16 @@ enum ToolLocator {
     static func missing(_ names: [String]) -> [String] {
         names.filter { find($0) == nil }
     }
+
+    /// PATH for child processes: bundled tools + every dir we search +
+    /// inherited PATH. GUI apps get a minimal PATH (/usr/bin:/bin:...), so
+    /// spawned tools like veo/av1an couldn't find ffprobe/ffmpeg themselves.
+    static func childPath() -> String {
+        var dirs = bundledToolsDir.map { [$0.path] } ?? []
+        dirs += searchDirs
+        let envPath = ProcessInfo.processInfo.environment["PATH"] ?? ""
+        dirs += envPath.split(separator: ":").map(String.init)
+        var seen = Set<String>()
+        return dirs.filter { seen.insert($0).inserted }.joined(separator: ":")
+    }
 }
