@@ -150,12 +150,12 @@ struct ContentView: View {
                      verticalSpacing: 8) {
                     GridRow {
                         HStack {
-                            Text("Encoder parametreleri")
+                            Text("Encoder parametreleri").fixedSize()
                             TextField("--preset 6", text: $encoderParams)
                                 .frame(width: 180)
                         }
                         HStack {
-                            Text("Zone ek parametre")
+                            Text("Zone ek parametre").fixedSize()
                             TextField("", text: $extraZoneParams)
                                 .frame(width: 160)
                         }
