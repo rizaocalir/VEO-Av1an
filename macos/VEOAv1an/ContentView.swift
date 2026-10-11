@@ -86,7 +86,7 @@ struct ContentView: View {
                         inputPath = url.path
                         if outputPath.isEmpty {
                             outputPath = url.deletingPathExtension().path
-                                + "-encoded.mkv"
+                                + "-encoded.mp4"
                         }
                     }
                 }
@@ -251,7 +251,7 @@ struct ContentView: View {
         if panel.runModal() == .OK, let url = panel.url {
             inputPath = url.path
             if outputPath.isEmpty {
-                outputPath = url.deletingPathExtension().path + "-encoded.mkv"
+                outputPath = url.deletingPathExtension().path + "-encoded.mp4"
             }
         }
     }
@@ -259,7 +259,7 @@ struct ContentView: View {
     private func pickOutput() {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.movie]
-        panel.nameFieldStringValue = "output.mkv"
+        panel.nameFieldStringValue = "output.mp4"
         if panel.runModal() == .OK, let url = panel.url {
             outputPath = url.path
         }
@@ -287,7 +287,7 @@ private struct OnboardingView: View {
     private let tips: [(String, String)] = [
         ("film", "Girdi: mp4, mkv, mov, avi, webm — ffprobe'nin okuduğu her format."),
         ("checkmark.seal", "En sorunsuz girdi: yuv420p piksel formatı ve çift sayılı en/boy (örn. 1920x1080)."),
-        ("shippingbox", "Çıktı olarak .mkv önerilir; Av1an parçaları en güvenli bu kapta birleştirir."),
+        ("shippingbox", "Çıktı .mp4 veya .mkv olabilir — .mp4 her oynatıcıda açılır (kayıpsız remux ile üretilir)."),
         ("timer", "Analiz süresi video uzadıkça artar — VEO her segmenti birkaç kez deneme kodlaması yapar."),
         ("internaldrive", "Diskte kaynak boyutunun birkaç katı boş alan bırak (geçici parça dosyaları için)."),
         ("wrench.and.screwdriver", "veo ve av1an uygulamanın içinde gömülü; ayrıca kurulum gerekmez. ffprobe sistemde kurulu olmalı (brew install ffmpeg)."),

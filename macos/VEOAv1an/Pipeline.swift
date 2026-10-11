@@ -10,6 +10,7 @@ enum Phase: String {
     case analyzing = "VEO analizi çalışıyor"
     case converting = "Zones üretiliyor"
     case encoding = "Av1an encode ediyor"
+    case remuxing = "MP4'e çevriliyor"
     case verifying = "VMAF ölçülüyor"
     case done = "Tamamlandı"
     case failed = "Hata"
@@ -243,8 +244,12 @@ final class Pipeline: ObservableObject {
         appendLog("girdi: \(input.path)")
         appendLog("çıktı: \(output.path)")
 
+        // av1an always concats to Matroska; non-mkv outputs are
+        // remuxed losslessly with ffmpeg afterwards.
+        let needsRemux = output.pathExtension.lowercased() != "mkv"
         let missing = ToolLocator.missing(
-            ["veo", "av1an", "ffprobe"] + (cfg.verifyVMAF ? ["ffmpeg"] : []))
+            ["veo", "av1an", "ffprobe"]
+                + ((cfg.verifyVMAF || needsRemux) ? ["ffmpeg"] : []))
         if !missing.isEmpty {
             appendLog("eksik araçlar: \(missing.joined(separator: ", "))")
             appendLog("brew/cargo ile kurun veya PATH'e ekleyin.")
@@ -309,26 +314,44 @@ final class Pipeline: ObservableObject {
             try zonesText.write(to: zonesURL, atomically: true, encoding: .utf8)
             appendLog("zones.txt:\n\(zonesText)")
 
-            // 4) Av1an
+            // 4) Av1an (always to mkv; remux below if user asked mp4)
             phase = .encoding
+            let encodeTarget = needsRemux
+                ? workdir.appendingPathComponent("encoded.mkv") : output
             var result = try await run(ToolLocator.find("av1an")!,
                                        av1anCommand(cfg, input: input,
-                                                    output: output, zones: zonesURL),
+                                                    output: encodeTarget, zones: zonesURL),
                                        tag: "av1an")
             if cancelled { phase = .cancelled; return }
             if result.code != 0 && cfg.fallbackNoZones {
                 appendLog("zones reddedildi; zones'suz tekrar deneniyor")
                 result = try await run(ToolLocator.find("av1an")!,
                                        av1anCommand(cfg, input: input,
-                                                    output: output, zones: nil),
+                                                    output: encodeTarget, zones: nil),
                                        tag: "av1an")
             }
             if cancelled { phase = .cancelled; return }
             guard result.code == 0,
-                  FileManager.default.fileExists(atPath: output.path) else {
+                  FileManager.default.fileExists(atPath: encodeTarget.path) else {
                 appendLog("Av1an başarısız (çıkış \(result.code))")
                 phase = .failed
                 return
+            }
+
+            // 4b) lossless remux mkv -> mp4 (or any non-mkv container)
+            if needsRemux {
+                phase = .remuxing
+                let remux = try await run(ToolLocator.find("ffmpeg")!,
+                    ["-i", encodeTarget.path, "-c", "copy",
+                     "-movflags", "+faststart", "-y", output.path],
+                    tag: "remux")
+                if cancelled { phase = .cancelled; return }
+                guard remux.code == 0,
+                      FileManager.default.fileExists(atPath: output.path) else {
+                    appendLog("remux başarısız (çıkış \(remux.code)) — mkv işyerinde kaldı")
+                    phase = .failed
+                    return
+                }
             }
 
             // 5) optional VMAF
