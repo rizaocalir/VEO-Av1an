@@ -366,7 +366,8 @@ final class Pipeline: ObservableObject {
             if let inSize = try? input.resourceValues(forKeys: [.fileSizeKey]).fileSize,
                let outSize = try? output.resourceValues(forKeys: [.fileSizeKey]).fileSize,
                outSize > inSize {
-                let mb = { String(format: "%.1f MB", Double($0) / 1_048_576) }
+                let mb = { (v: Int) in
+                    String(format: "%.1f MB", Double(v) / 1_048_576) }
                 sizeWarning = String(localized:
                     "çıktı \(mb(outSize)) girişten \(mb(inSize)) büyük — kaynak zaten sıkıştırılmış; Hedef VMAF'ı düşürün (ör. 88–90)")
                 appendLog(sizeWarning!)
