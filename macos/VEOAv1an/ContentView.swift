@@ -218,10 +218,14 @@ struct ContentView: View {
             }
         }
         if let w = pipeline.sizeWarning {
-            Text(w)
-                .font(.caption)
-                .foregroundStyle(.orange)
-                .multilineTextAlignment(.trailing)
+            HStack(spacing: 6) {
+                Spacer()
+                Image(systemName: "exclamationmark.triangle.fill")
+                Text(w)
+                    .font(.callout.weight(.semibold))
+                    .multilineTextAlignment(.trailing)
+            }
+            .foregroundStyle(.orange)
         }
         }
     }

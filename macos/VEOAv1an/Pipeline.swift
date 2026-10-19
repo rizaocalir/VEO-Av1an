@@ -363,8 +363,10 @@ final class Pipeline: ObservableObject {
             }
             // warn when the encode grew the file — the source was
             // already compressed; suggest lowering the VMAF target
-            if let inSize = try? input.resourceValues(forKeys: [.fileSizeKey]).fileSize,
-               let outSize = try? output.resourceValues(forKeys: [.fileSizeKey]).fileSize,
+            if let inSize = (try? input.resourceValues(
+                    forKeys: [.fileSizeKey]))?.fileSize,
+               let outSize = (try? output.resourceValues(
+                    forKeys: [.fileSizeKey]))?.fileSize,
                outSize > inSize {
                 let mb = { (v: Int) in
                     String(format: "%.1f MB", Double(v) / 1_048_576) }
