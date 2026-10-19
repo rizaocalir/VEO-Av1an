@@ -460,6 +460,18 @@ def main() -> int:
                                                              cfg.target_vmaf,
                                                              delta)
 
+        # warn when the encode grew the file — the source was already
+        # compressed; suggest lowering the VMAF target
+        if not cfg.dry_run:
+            in_size = os.path.getsize(args.input)
+            out_size = os.path.getsize(args.output)
+            if out_size > in_size:
+                log.warning(
+                    "output (%.1f MB) is larger than input (%.1f MB) - "
+                    "the source is already compressed; lower target_vmaf "
+                    "(e.g. 88-90)",
+                    out_size / 2**20, in_size / 2**20)
+
         log.info("done: %s", args.output)
         return EXIT_OK
     finally:

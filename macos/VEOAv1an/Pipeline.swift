@@ -40,6 +40,7 @@ final class Pipeline: ObservableObject {
     @Published var phase: Phase = .idle
     @Published var progress: Double? = nil     // 0-1 when parseable
     @Published var logLines: [String] = []
+    @Published var sizeWarning: String?
 
     private var process: Process?
     private var cancelled = false
@@ -240,6 +241,7 @@ final class Pipeline: ObservableObject {
         phase = .probing
         progress = nil
         logLines = []
+        sizeWarning = nil
         cancelled = false
         appendLog(String(localized: "girdi: \(input.path)"))
         appendLog(String(localized: "çıktı: \(output.path)"))
@@ -358,6 +360,16 @@ final class Pipeline: ObservableObject {
             if cfg.verifyVMAF {
                 phase = .verifying
                 await verify(cfg, input: input, output: output, workdir: workdir)
+            }
+            // warn when the encode grew the file — the source was
+            // already compressed; suggest lowering the VMAF target
+            if let inSize = try? input.resourceValues(forKeys: [.fileSizeKey]).fileSize,
+               let outSize = try? output.resourceValues(forKeys: [.fileSizeKey]).fileSize,
+               outSize > inSize {
+                let mb = { String(format: "%.1f MB", Double($0) / 1_048_576) }
+                sizeWarning = String(localized:
+                    "çıktı \(mb(outSize)) girişten \(mb(inSize)) büyük — kaynak zaten sıkıştırılmış; Hedef VMAF'ı düşürün (ör. 88–90)")
+                appendLog(sizeWarning!)
             }
             phase = .done
             progress = 1

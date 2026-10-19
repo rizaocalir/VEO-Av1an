@@ -196,6 +196,7 @@ struct ContentView: View {
     // MARK: - Controls
 
     private var controlsSection: some View {
+        VStack(alignment: .trailing, spacing: 4) {
         HStack {
             Button(pipeline.isRunning ? "Çalışıyor…" : "Başlat") {
                 Task { await start() }
@@ -215,6 +216,13 @@ struct ContentView: View {
             } else if pipeline.isRunning {
                 ProgressView().controlSize(.small)
             }
+        }
+        if let w = pipeline.sizeWarning {
+            Text(w)
+                .font(.caption)
+                .foregroundStyle(.orange)
+                .multilineTextAlignment(.trailing)
+        }
         }
     }
 
